@@ -238,12 +238,23 @@
             border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fafaf8;
         }
         .color-swatch {
-            width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.12);
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
             transition: transform 0.1s, box-shadow 0.1s;
+            position: relative;
         }
-        .color-swatch:hover { transform: scale(1.25); z-index: 2; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        .color-swatch.selected { outline: 2px solid var(--accent); outline-offset: 2px; }
+        .color-swatch span {
+            pointer-events: none;          /* 让点击事件穿透到父级色块 */
+            mix-blend-mode: difference;   /* 可选，增强对比，或使用动态颜色 */
+        }
     </style>
 </head>
 <body>
@@ -756,7 +767,10 @@
             function buildColorPalette() {
                 let html = '';
                 BEAD_COLORS.forEach((c, idx) => {
-                    html += `<div class="color-swatch" style="background:${c.hex};" title="${c.name} (${c.symbol})" data-index="${idx}"></div>`;
+                    const textColor = getContrastColor(c.rgb[0], c.rgb[1], c.rgb[2]);
+                    html += `<div class="color-swatch" style="background:${c.hex};" title="${c.name} (${c.symbol})" data-index="${idx}">
+                                <span style="color:${textColor}; font-size:0.7rem;">${c.symbol}</span>
+                            </div>`;
                 });
                 colorPalette.innerHTML = html;
             }
